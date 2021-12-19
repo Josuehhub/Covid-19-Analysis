@@ -54,17 +54,16 @@ WHERE continent is not null
 GROUP BY  location, Population
 Order by TotalDeathCount DESC
 
--- Showing Continents with Highest Death Count per population (Something else)
+-- Showing Continents with Highest Death Count per population
 
--- SELECT location, MAX(cast(total_deaths as int)) AS TotalDeathCount
--- FROM PortfolioProject..CovidDeaths
--- WHERE location like '%states%'
--- WHERE continent is null 
--- GROUP BY location 
--- Order by TotalDeathCount DESC
--- COME BACK TO IT !!!!!!!!
+ SELECT location, MAX(cast(total_deaths as int)) AS TotalDeathCount
+ FROM PortfolioProject..CovidDeaths
+Where continent is null 
+and location not in ('World', 'European Union', 'International', 'Upper middle income', 'High income', 'Lower middle income', 'Low income')
+ GROUP BY location 
+ Order by TotalDeathCount DESC
 
-
+-- OR 
 -- Showing Continents with Highest Death Count per population (Original) 
 
 SELECT continent, MAX(cast(total_deaths as int)) AS TotalDeathCount
@@ -157,9 +156,9 @@ FROM #PercentPopulationVaccinated
 
 -- Creating View to store data for later visualizations 
 
+DROP VIEW IF EXISTS PercentPopulationVaccinated
 USE PortfolioProject
 GO 
-
 Create View PercentPopulationVaccinated AS
 Select dea.continent, dea.location, dea.date, dea.population, vac.new_vaccinations,
 SUM(CONVERT(bigint,vac.new_vaccinations)) OVER 
@@ -170,8 +169,6 @@ JOIN PortfolioProject.. CovidVaccinations vac
 	and dea.date= vac.date
 WHERE dea.continent is not null 
 -- ORDER BY 2, 3
-
-DROP VIEW IF EXISTS PercentPopulationVaccinated
 
 SELECT *
 FROM PercentPopulationVaccinated
